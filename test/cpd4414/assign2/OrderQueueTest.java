@@ -128,5 +128,73 @@ public class OrderQueueTest {
         assertNull(order);
 
     }
+    
+    @Test
+    void testWhenRequestToProcessOrderWhenThereIsTimeRecievedThenTimeProcessedIsNow() {
+        OrderQueue orderQueue = new OrderQueue();
+        Order order = new Order("CUST00001", "ABC Construction");
+        order.addPurchase(new Purchase(2, 50));
+        try {
+            orderQueue.add(order);
+            orderQueue.orderProcess();
+        } catch (Exception ex) {
+            System.out.println("Exception");
+        }
+
+        long expResult = new Date().getTime();
+        long result = order.getTimeProcessed().getTime();
+        assertTrue(Math.abs(result - expResult) < 1000);
+    }
+
+    @Test
+    void testWhenRequestToProcessOrderWhenNoTimeRecievedThenThrowException() {
+        boolean result = false;
+
+        OrderQueue orderQueue = new OrderQueue();
+        Order order = new Order("CUST00001", "ABC Construction");
+        order.addPurchase(new Purchase(1, 450));
+        order.addPurchase(new Purchase(2, 250));
+        try {
+            orderQueue.add(order);
+        } catch (Exception e) {
+            System.out.println("");
+
+        }
+        try {
+            orderQueue.orderProcess();
+        } catch (NoTimeRecievedException e) {
+            System.out.println("Exception");
+            result = true;
+        } catch (Exception e) {
+            System.out.println("");
+        }
+        assertTrue(result);
+
+    }
+    
+    @Test
+    void testWhenRequestFulfillOrderWhenOrderDoesnotHaveTimeProcessedThenThrowException(){
+        boolean result = false;
+        OrderQueue orderQueue = new OrderQueue();
+        Order order = new Order("CUST00001", "ABC Construction");
+        order.addPurchase(new Purchase(1, 450));
+        try {
+            orderQueue.add(order);
+            orderQueue.orderProcess();
+        }
+        catch (Exception e) {
+            System.out.println("");
+        }
+        try {
+            orderQueue.orderFulfill();
+        } catch (NoTimeRecievedException e) {
+            result = true;
+        } catch (Exception e) {
+            System.out.println("");
+        }
+        assertTrue(result);
+        
+    }
+
 
 }
