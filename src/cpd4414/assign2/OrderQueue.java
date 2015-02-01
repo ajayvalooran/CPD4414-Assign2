@@ -40,6 +40,27 @@ public class OrderQueue {
             order.setTimeReceived(new Date());
         }
     }
+    
+    public Order nextOrder() {
+        return orderQueue.peek();
+    }
+
+    public void orderProcess() throws Exception {
+        Order order = orderQueue.remove();
+        if (order.getTimeReceived() == null) {
+            throw new NoTimeRecievedException();
+        } else {
+            order.setTimeProcessed(new Date());
+            processQueue.add(order);
+        }
+    }
+    
+    public void orderFulfill() throws Exception{
+        Order order = orderQueue.peek();
+        if(order.getTimeReceived() == null){
+            throw new NoTimeRecievedException();
+        }
+    }
 
     public static class NoCustomerIDException extends Exception {
 

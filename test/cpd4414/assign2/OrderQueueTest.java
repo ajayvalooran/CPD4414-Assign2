@@ -106,5 +106,27 @@ public class OrderQueueTest {
         assertTrue(result);
     }
 
+    @Test
+    void testWhenRequestNextOrderThereAreOrdersInSystemThenReturnOrderWithEarliestTimeReceived() {
+        OrderQueue orderQueue = new OrderQueue();
+        Order order = new Order("CUST00001", "ABC Construction");
+        order.addPurchase(new Purchase(2, 450));
+        try {
+            orderQueue.add(order);
+        } catch (Exception e) {
+            System.out.println("");
+        }
+        Order newOrder = orderQueue.nextOrder();
+        assertEquals(newOrder, order);
+
+    }
     
+    @Test
+    void testWhenRequestNextOrderThereAreOrdersInSystemThenReturnOrderThenReturnNull() {
+        OrderQueue orderQueue = new OrderQueue();
+        Order order = orderQueue.nextOrder();
+        assertNull(order);
+
+    }
+
 }
